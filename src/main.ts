@@ -108,8 +108,10 @@ class KalkulationsTrainer {
             currentPreis += betrag;
           }
         } else {
+          // Bezugskosten ohne Prozentsatz (Festbetrag)
           const betrag = Math.round((Math.random() * 20 + 5) * 100) / 100;
           zeile.preis = betrag;
+          zeile.formel = `${betrag.toFixed(2)}`; // Einfache Formel: der Betrag selbst
           currentPreis += betrag;
         }
       } else if (schema.operation === '=') {
@@ -168,9 +170,12 @@ class KalkulationsTrainer {
             currentPreis = currentPreis / (1 - zeile.prozent / 100);
           }
           zeile.preis = Math.round((currentPreis * zeile.prozent / 100) * 100) / 100;
+          zeile.formel = `${currentPreis.toFixed(2)}×${zeile.prozent}÷100`;
         } else {
+          // Bezugskosten ohne Prozentsatz (Festbetrag)
           const betrag = Math.round((Math.random() * 20 + 5) * 100) / 100;
           zeile.preis = betrag;
+          zeile.formel = `${betrag.toFixed(2)}`; // Einfache Formel: der Betrag selbst
           currentPreis -= betrag;
         }
       } else if (originalSchema.operation === '=') {
@@ -652,7 +657,10 @@ class KalkulationsTrainer {
       }
       
       let formelHtml = '';
-      if (zeile.isFixed || zeile.prozent === null) {
+      // Zeige Formel-Eingabe für alle Operationen außer "=" und feste Werte
+      const zeigeFormel = !zeile.isFixed && (zeile.operation === '+' || zeile.operation === '-');
+      
+      if (!zeigeFormel) {
         formelHtml = '<span class="formel-display">-</span>';
       } else {
         formelHtml = `
@@ -988,6 +996,7 @@ class KalkulationsTrainer {
           if (schema.abkuerzung === 'BK') {
             // Bezugskosten als Festbetrag
             zeile.preis = wert;
+            zeile.formel = `${wert.toFixed(2)}`; // Einfache Formel: der Betrag selbst
             currentPreis += wert;
           } else if (schema.operation === '+' || schema.operation === '-') {
             zeile.prozent = wert;
