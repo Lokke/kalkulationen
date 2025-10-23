@@ -780,7 +780,15 @@ class KalkulationsTrainer {
     const showMoveCol = this.modus === 'anordnung' && !this.einstellungen.tabelleVorgeordnet;
     
     tbody.innerHTML = this.daten.map((zeile, index) => {
-      const prozentText = zeile.prozent ? `${zeile.prozent}%` : '';
+      // Prozent-Spalte: Zeige Prozent ODER Euro-Betrag (bei BK)
+      let prozentText = '';
+      if (zeile.prozent) {
+        prozentText = `${zeile.prozent}%`;
+      } else if (zeile.preis !== null && !zeile.isFixed && zeile.abkuerzung === 'BK') {
+        // Bezugskosten als Festbetrag anzeigen
+        prozentText = `${zeile.preis.toFixed(2)} €`;
+      }
+      
       const isFirst = index === 0;
       const isLast = index === this.daten.length - 1;
       
