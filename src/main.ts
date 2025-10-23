@@ -110,9 +110,13 @@ class KalkulationsTrainer {
           }
         } else {
           // Bezugskosten ohne Prozentsatz (Festbetrag)
-          const betrag = Math.round((Math.random() * 20 + 5) * 100) / 100;
+          // 40% Chance, dass BK = 0 (keine Bezugskosten anfallen)
+          const hatBezugskosten = Math.random() > 0.4;
+          const betrag = hatBezugskosten 
+            ? Math.round((Math.random() * 20 + 5) * 100) / 100 
+            : 0;
           zeile.preis = betrag;
-          zeile.formel = `${betrag.toFixed(2)}`; // Einfache Formel: der Betrag selbst
+          zeile.formel = `${betrag.toFixed(2)}`;
           currentPreis += betrag;
         }
       } else if (schema.operation === '=') {
@@ -174,9 +178,13 @@ class KalkulationsTrainer {
           zeile.formel = `${currentPreis.toFixed(2)}×${zeile.prozent}÷100`;
         } else {
           // Bezugskosten ohne Prozentsatz (Festbetrag)
-          const betrag = Math.round((Math.random() * 20 + 5) * 100) / 100;
+          // 40% Chance, dass BK = 0 (keine Bezugskosten anfallen)
+          const hatBezugskosten = Math.random() > 0.4;
+          const betrag = hatBezugskosten 
+            ? Math.round((Math.random() * 20 + 5) * 100) / 100 
+            : 0;
           zeile.preis = betrag;
-          zeile.formel = `${betrag.toFixed(2)}`; // Einfache Formel: der Betrag selbst
+          zeile.formel = `${betrag.toFixed(2)}`;
           currentPreis -= betrag;
         }
       } else if (originalSchema.operation === '=') {
