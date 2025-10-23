@@ -1,7 +1,8 @@
 import './style.css';
-import type { KalkulationsZeile, KalkulationsEinstellungen } from './types';
+import type { KalkulationsZeile, KalkulationsEinstellungen, TextAufgabe } from './types';
 import { kalkulationsSchemaTemplate } from './types';
 import { kalkulationsLexikon, allgemeineInfos } from './lexikon';
+import { generiereTextaufgabe } from './textaufgaben';
 
 type UebungsModus = 'anordnung' | 'operation' | 'vollstaendig';
 
@@ -11,10 +12,14 @@ class KalkulationsTrainer {
   private modus: UebungsModus = 'anordnung';
   private einstellungen: KalkulationsEinstellungen = {
     startWertTyp: 'LEP',
-    tabelleVorgeordnet: false
+    tabelleVorgeordnet: false,
+    pruefungsModus: false
   };
   private draggedElement: HTMLTableRowElement | null = null;
   private lexikonVisible: boolean = false;
+  private aktuelleTextaufgabe: TextAufgabe | null = null;
+  private geloest: boolean = false; // Track ob bereits geprüft wurde
+  private zeilenValidierung: Map<number, boolean> = new Map(); // Zeilen-Validierung speichern
   
   constructor() {
     this.render();
@@ -224,6 +229,7 @@ class KalkulationsTrainer {
     const customWertInput = document.getElementById('customWert') as HTMLInputElement;
     const customPositionSelect = document.getElementById('customPosition') as HTMLSelectElement;
     const vorgeordnetCheckbox = document.getElementById('vorgeordnet') as HTMLInputElement;
+    const pruefungsModusCheckbox = document.getElementById('pruefungsModus') as HTMLInputElement;
     const neueAufgabeBtn = document.getElementById('neueAufgabe') as HTMLButtonElement;
     const pruefeBtn = document.getElementById('pruefe') as HTMLButtonElement;
     const lexikonBtn = document.getElementById('lexikonBtn') as HTMLButtonElement;
@@ -244,17 +250,12 @@ class KalkulationsTrainer {
         customInputs.style.display = value === 'CUSTOM' ? 'block' : 'none';
       }
       
-      if (value !== 'CUSTOM') {
-        this.neueAufgabe();
-      }
+      this.neueAufgabe();
     });
 
     customWertInput?.addEventListener('change', (e) => {
-      const value = parseFloat((e.target as HTMLInputElement).value);
-      if (!isNaN(value) && value > 0) {
-        this.einstellungen.startWertCustom = value;
-        this.neueAufgabe();
-      }
+      this.einstellungen.startWertCustom = parseFloat((e.target as HTMLInputElement).value);
+      this.neueAufgabe();
     });
 
     customPositionSelect?.addEventListener('change', (e) => {
@@ -264,6 +265,25 @@ class KalkulationsTrainer {
 
     vorgeordnetCheckbox?.addEventListener('change', (e) => {
       this.einstellungen.tabelleVorgeordnet = (e.target as HTMLInputElement).checked;
+      this.neueAufgabe();
+    });
+    
+    pruefungsModusCheckbox?.addEventListener('change', (e) => {
+      this.einstellungen.pruefungsModus = (e.target as HTMLInputElement).checked;
+      
+      // Im Prüfungsmodus: Andere Optionen deaktivieren
+      if (this.einstellungen.pruefungsModus) {
+        if (startWertSelect) startWertSelect.disabled = true;
+        if (vorgeordnetCheckbox) vorgeordnetCheckbox.disabled = true;
+        if (modusSelect) modusSelect.disabled = true;
+        if (lexikonBtn) lexikonBtn.disabled = true;
+      } else {
+        if (startWertSelect) startWertSelect.disabled = false;
+        if (vorgeordnetCheckbox) vorgeordnetCheckbox.disabled = false;
+        if (modusSelect) modusSelect.disabled = false;
+        if (lexikonBtn) lexikonBtn.disabled = false;
+      }
+      
       this.neueAufgabe();
     });
 
@@ -286,6 +306,15 @@ class KalkulationsTrainer {
 
   private neueAufgabe() {
     this.clearFeedback();
+    this.geloest = false;
+    this.zeilenValidierung.clear();
+    
+    // Prüfungsmodus
+    if (this.einstellungen.pruefungsModus) {
+      this.aktuelleTextaufgabe = generiereTextaufgabe(Math.random() > 0.5 ? 'vorwaerts' : 'rueckwaerts');
+      this.zeigePruefungsaufgabe();
+      return;
+    }
     
     this.korrekteDaten = this.generateRandomData();
     
@@ -435,6 +464,55 @@ class KalkulationsTrainer {
     }
 
     this.showFeedback(allCorrect, fehlerAnzahl);
+    
+    // Nach erfolgreicher Prüfung: Fehlerkorrektur ermöglichen
+    if (!allCorrect) {
+      this.geloest = true; // Markiere als "geprüft" damit weitere Eingaben möglich sind
+    }
+  }
+
+  // Prüfe einzelne Zeile (während Bearbeitung)
+  private pruefeZeile(index: number): void {
+    const zeile = this.daten[index];
+    const korrekt = this.korrekteDaten.find(k => k.id === zeile.id);
+    
+    if (!korrekt) return;
+
+    // Prüfe Preis
+    if (!zeile.isFixed) {
+      const input = document.getElementById(`preis-${index}`) as HTMLInputElement;
+      const userValue = parseFloat(zeile.userPreis.replace(',', '.'));
+      const correctValue = korrekt.preis;
+      
+      if (input && correctValue !== null) {
+        if (isNaN(userValue) || Math.abs(userValue - correctValue) > 0.01) {
+          input.classList.add('incorrect');
+          input.classList.remove('correct');
+          this.zeilenValidierung.set(index, false);
+        } else {
+          input.classList.add('correct');
+          input.classList.remove('incorrect');
+          this.zeilenValidierung.set(index, true);
+        }
+      }
+    }
+
+    // Prüfe Formel (durch Ergebnis)
+    if (zeile.userFormel) {
+      const formelInput = document.getElementById(`formel-${index}`) as HTMLInputElement;
+      const userResult = this.evaluateFormel(zeile.userFormel, 0);
+      const correctValue = korrekt.preis;
+      
+      if (formelInput && correctValue !== null && userResult !== null) {
+        if (Math.abs(userResult - correctValue) <= 0.01) {
+          formelInput.classList.add('correct');
+          formelInput.classList.remove('incorrect');
+        } else {
+          formelInput.classList.add('incorrect');
+          formelInput.classList.remove('correct');
+        }
+      }
+    }
   }
 
   private showFeedback(success: boolean, fehlerAnzahl: number) {
@@ -511,6 +589,11 @@ class KalkulationsTrainer {
             Tabelle bereits angeordnet
           </label>
           
+          <label>
+            <input type="checkbox" id="pruefungsModus" />
+            🎓 Prüfungsmodus
+          </label>
+          
           <button id="neueAufgabe">Neue Aufgabe</button>
           <button id="pruefe">Lösung prüfen</button>
           <button id="lexikonBtn" class="lexikon-btn">📚 Lexikon</button>
@@ -518,6 +601,8 @@ class KalkulationsTrainer {
       </div>
 
       <div id="feedback" class="feedback"></div>
+      
+      <div id="textaufgabe" class="textaufgabe" style="display: none;"></div>
 
       <div class="kalkulation-container">
         <table id="kalkulationTabelle">
@@ -662,6 +747,15 @@ class KalkulationsTrainer {
         this.daten[index].userPreis = target.value;
         target.classList.remove('correct', 'incorrect');
       });
+      
+      // Zeilen-Prüfung per Blur (wenn Feld verlassen wird)
+      input.addEventListener('blur', (e) => {
+        if (!this.geloest) { // Nur wenn noch nicht komplett geprüft
+          const target = e.target as HTMLInputElement;
+          const index = parseInt(target.getAttribute('data-index') || '0');
+          this.pruefeZeile(index);
+        }
+      });
     });
   }
 
@@ -670,8 +764,30 @@ class KalkulationsTrainer {
       input.addEventListener('input', (e) => {
         const target = e.target as HTMLInputElement;
         const index = parseInt(target.getAttribute('data-index') || '0');
-        this.daten[index].userFormel = target.value;
+        const formel = target.value;
+        this.daten[index].userFormel = formel;
         target.classList.remove('correct', 'incorrect');
+        
+        // Formel auswerten und Preis-Feld automatisch füllen
+        if (formel.trim()) {
+          const ergebnis = this.evaluateFormel(formel, 0);
+          if (ergebnis !== null && !isNaN(ergebnis)) {
+            this.daten[index].userPreis = ergebnis.toFixed(2);
+            const preisInput = document.getElementById(`preis-${index}`) as HTMLInputElement;
+            if (preisInput) {
+              preisInput.value = ergebnis.toFixed(2);
+            }
+          }
+        }
+      });
+      
+      // Zeilen-Prüfung per Blur (wenn Feld verlassen wird)
+      input.addEventListener('blur', (e) => {
+        if (!this.geloest) { // Nur wenn noch nicht komplett geprüft
+          const target = e.target as HTMLInputElement;
+          const index = parseInt(target.getAttribute('data-index') || '0');
+          this.pruefeZeile(index);
+        }
       });
     });
   }
@@ -756,6 +872,94 @@ class KalkulationsTrainer {
           this.renderTabelle();
         }
       });
+    });
+  }
+  
+  // Prüfungsmodus: Textaufgabe anzeigen
+  private zeigePruefungsaufgabe() {
+    if (!this.aktuelleTextaufgabe) return;
+    
+    const textaufgabeDiv = document.getElementById('textaufgabe');
+    if (textaufgabeDiv) {
+      textaufgabeDiv.style.display = 'block';
+      textaufgabeDiv.innerHTML = `
+        <h3>📝 Prüfungsaufgabe</h3>
+        <div class="aufgaben-text">${this.aktuelleTextaufgabe.text.replace(/\n/g, '<br/>')}</div>
+      `;
+    }
+    
+    // Erstelle Kalkulation basierend auf Textaufgabe
+    this.erstellePruefungsKalkulation();
+    this.renderTabelle();
+  }
+  
+  private erstellePruefungsKalkulation() {
+    if (!this.aktuelleTextaufgabe) return;
+    
+    const { startwert, startPosition, werte } = this.aktuelleTextaufgabe;
+    
+    // Korrekte Lösung berechnen
+    this.korrekteDaten = [];
+    let currentPreis = startwert;
+    
+    kalkulationsSchemaTemplate.forEach((schema, index) => {
+      const zeile: KalkulationsZeile = {
+        id: index,
+        operation: schema.operation,
+        abkuerzung: schema.abkuerzung,
+        name: schema.name,
+        prozent: null,
+        preis: null,
+        userPreis: '',
+        userFormel: '',
+        formel: '',
+        isFixed: false,
+        originalOrder: index
+      };
+      
+      // Startwert setzen
+      if (index === startPosition) {
+        zeile.preis = startwert;
+        zeile.userPreis = startwert.toFixed(2);
+        zeile.isFixed = true;
+        currentPreis = startwert;
+      } else {
+        // Wert aus Textaufgabe holen
+        const wert = werte.get(schema.abkuerzung);
+        
+        if (wert !== undefined) {
+          if (schema.abkuerzung === 'BK') {
+            // Bezugskosten als Festbetrag
+            zeile.preis = wert;
+            currentPreis += wert;
+          } else if (schema.operation === '+' || schema.operation === '-') {
+            zeile.prozent = wert;
+            const betrag = Math.round((currentPreis * wert / 100) * 100) / 100;
+            zeile.preis = betrag;
+            zeile.formel = `${currentPreis.toFixed(2)}×${wert}÷100`;
+            
+            if (schema.operation === '-') {
+              currentPreis -= betrag;
+            } else {
+              currentPreis += betrag;
+            }
+          }
+        } else if (schema.operation === '=') {
+          zeile.preis = Math.round(currentPreis * 100) / 100;
+        }
+      }
+      
+      this.korrekteDaten.push(zeile);
+    });
+    
+    // Unsortierte Tabelle für Prüfungsmodus
+    this.daten = this.shuffleArray([...this.korrekteDaten]);
+    this.daten.forEach(zeile => {
+      zeile.operation = '';
+      if (!zeile.isFixed) {
+        zeile.userPreis = '';
+        zeile.userFormel = '';
+      }
     });
   }
 }

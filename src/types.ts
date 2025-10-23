@@ -19,6 +19,14 @@ export interface KalkulationsEinstellungen {
   startWertCustom?: number;
   startPositionIndex?: number;
   tabelleVorgeordnet: boolean;
+  pruefungsModus: boolean;
+}
+
+export interface TextAufgabe {
+  text: string;
+  startwert: number;
+  startPosition: number;
+  werte: Map<string, number>; // abkuerzung -> wert (prozent oder festbetrag)
 }
 
 export interface KalkulationsSchema {

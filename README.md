@@ -1,36 +1,36 @@
 # Kalkulationstrainer
 
-Ein interaktiver Trainer für die deutsche Handelskalkulation (Vor- und Rückwärtskalkulation).
+Interaktiver Trainer für deutsche Handelskalkulation (Vor- und Rückwärtskalkulation).
 
 ## Features
 
-- **Flexibler Startwert**: Wähle zwischen vordefinierten Startpunkten (LEP, LVP, BVP2) oder gib einen beliebigen Wert und Position ein
+- **Flexibler Startwert**: Vorgegebene Startpunkte (LEP, LVP, BVP2) oder beliebiger Wert mit Position
 - **3 Übungsmodi**:
   - Tabelle anordnen + Rechenzeichen wählen
   - Nur Rechenzeichen wählen
   - Vollständig (in Entwicklung)
-- **Drag & Drop**: Zeilen per Drag & Drop in die richtige Reihenfolge bringen
-- **Pfeil-Buttons**: Alternative zum Drag & Drop - Zeilen mit Pfeilen verschieben
-- **Rechenzeichen-Buttons**: Wähle zwischen +, −, = per Klick
-- **Preis-Berechnung**: Nur ein Preis ist vorgegeben, alle anderen müssen berechnet werden
-- **Formel-Eingabe**: Gib deine Berechnungsformel ein (z.B. `450×20÷100`)
-- **Intelligente Validierung**:
-  - Positions-Check (falsche Zeilen werden rot markiert)
+- **Drag & Drop**: Zeilen in richtige Reihenfolge bringen
+- **Pfeil-Buttons**: Alternative - Zeilen mit Pfeilen verschieben
+- **Rechenzeichen-Buttons**: +, −, = per Klick
+- **Preis-Berechnung**: Ein Preis vorgegeben, andere berechnen
+- **Formel-Eingabe**: Berechnungsformel (z.B. `450×20÷100`)
+- **Validierung**:
+  - Positions-Check (falsche Zeilen rot)
   - Rechenzeichen-Check (grün/rot)
   - Preis-Check (±0,01€ Toleranz)
-  - **Formel-Check durch Ergebnis**: Es wird das berechnete Ergebnis der Formel geprüft, nicht die exakte Syntax
-- **Integriertes Lexikon**: Ausführliche Erklärungen zu jedem Kalkulationsschritt
-  - Definitionen und Erklärungen zu allen 18 Schritten
+  - **Formel-Check durch Ergebnis**: Berechnetes Ergebnis wird geprüft, nicht Syntax
+- **Lexikon**: Erklärungen zu jedem Kalkulationsschritt
+  - Definitionen zu allen 18 Schritten
   - Formeln (Vorwärts- und Rückwärtskalkulation)
-  - Praktische Beispiele
-  - Unterschiede zwischen Vor- und Rückwärtskalkulation
-- **Vorgeordnete Tabelle**: Option zum Üben mit bereits sortierter Tabelle
-- **Dynamische Werte**: Jede Aufgabe mit neuen Zufallswerten
-- **Kompaktes Design**: Übersichtliche Darstellung aller 18 Kalkulationsschritte
+  - Beispiele
+  - Unterschiede zwischen Kalkulationsarten
+- **Vorgeordnete Tabelle**: Option mit sortierter Tabelle
+- **Dynamische Werte**: Neue Zufallswerte pro Aufgabe
+- **Kompaktes Design**: Darstellung aller 18 Kalkulationsschritte
 
 ## Kalkulationsschema
 
-Das Programm deckt alle 18 Schritte der Handelskalkulation ab:
+18 Schritte der Handelskalkulation:
 
 1. **LEP** - Listeneinkaufspreis
 2. **LR** - Lieferantenrabatt
@@ -61,30 +61,30 @@ Wähle aus vier Optionen:
 - **LVP** (Rückwärtskalkulation vom Verkauf)
 - **BVP2** (Rückwärtskalkulation vom Endpreis)
 - **Benutzerdefiniert**: 
-  - Gib einen beliebigen Wert in Euro ein
-  - Wähle die Startposition (z.B. BP, SKP, etc.)
-  - Perfekt für spezielle Übungsszenarien
+  - Beliebiger Wert in Euro
+  - Startposition wählbar (z.B. BP, SKP)
+  - Für spezielle Übungsszenarien
 
 ### 2. Übungsoptionen
 
 - **"Tabelle bereits angeordnet"**: 
-  - Aktiviert: Übe nur Rechenzeichen und Berechnungen
-  - Deaktiviert: Zusätzlich Drag & Drop-Übung
+  - Aktiviert: Rechenzeichen und Berechnungen üben
+  - Deaktiviert: Drag & Drop-Übung inklusive
 
 ### 3. Aufgabe bearbeiten
 
-1. **Tabelle anordnen** (wenn nicht vorgeordnet): Ziehe Zeilen oder nutze die Pfeile
-2. **Rechenzeichen wählen**: Klicke auf +, − oder =
-3. **Preise berechnen**: Trage die berechneten Preise ein (nur ein Preis ist vorgegeben)
-4. **Formeln eingeben**: Dokumentiere deine Berechnungsschritte
+1. **Tabelle anordnen** (wenn nicht vorgeordnet): Zeilen ziehen oder Pfeile nutzen
+2. **Rechenzeichen wählen**: +, − oder = klicken
+3. **Preise berechnen**: Berechnete Preise eintragen (ein Preis vorgegeben)
+4. **Formeln eingeben**: Berechnungsschritte dokumentieren
    - Beispiel: `450×20÷100` oder `450*20/100`
-   - Das Programm prüft das **Ergebnis**, nicht die exakte Schreibweise
-   - Du kannst × oder \*, ÷ oder / verwenden
-   - Komma oder Punkt für Dezimalzahlen funktionieren beide
+   - **Ergebnis** wird geprüft, nicht Schreibweise
+   - × oder *, ÷ oder / verwendbar
+   - Komma oder Punkt für Dezimalzahlen
 
 ### 4. Lösung prüfen
 
-Klicke auf **"Lösung prüfen"** für sofortiges Feedback:
+**"Lösung prüfen"** für Feedback:
 
 - Grün = Richtig
 - Rot = Falsch
@@ -92,24 +92,24 @@ Klicke auf **"Lösung prüfen"** für sofortiges Feedback:
 
 ### 5. Lexikon nutzen
 
-Klicke auf **"Lexikon"** für:
+**"Lexikon"** öffnen für:
 
-- Detaillierte Erklärungen zu jedem Kalkulationsschritt
+- Erklärungen zu jedem Kalkulationsschritt
 - Formeln für Vor- und Rückwärtskalkulation
-- Praktische Beispiele mit Zahlen
-- Wann welche Kalkulationsart angewendet wird
+- Beispiele mit Zahlen
+- Anwendungsfälle der Kalkulationsarten
 
 ## Tipps & Tricks
 
-- **Prozentsätze**: Skonto ist immer 1-4%, andere variieren je nach Bereich
-- **Bezugskosten (BK)**: Einzige Position ohne Prozentsatz (Festbetrag)
+- **Prozentsätze**: Skonto 1-4%, andere variieren je nach Bereich
+- **Bezugskosten (BK)**: Position ohne Prozentsatz (Festbetrag)
 - **Zwischensummen (=)**: LEP, ZEP, BEK, BP, SKP, BVP, ZVP, LVP, BVP2
-- **Toleranz**: Preise müssen auf ±0,01€ genau sein
+- **Toleranz**: Preise ±0,01€ genau
 - **Formeln**: 
-  - Rechne wie du willst - Hauptsache das Ergebnis stimmt
-  - `500*0.2` = `500×20÷100` = `500×0,2` (alles korrekt, wenn Ergebnis = 100)
-- **Lexikon**: Bei Unsicherheiten einfach öffnen für Erklärungen und Beispiele
-- **Benutzerdefinierter Start**: Nutze diese Option für:
+  - Ergebnis muss stimmen, nicht Schreibweise
+  - `500*0.2` = `500×20÷100` = `500×0,2` (korrekt bei Ergebnis = 100)
+- **Lexikon**: Bei Unsicherheiten öffnen für Erklärungen und Beispiele
+- **Benutzerdefinierter Start**: Für:
   - Gezielte Übung einzelner Kalkulationsabschnitte
   - Nachrechnen realer Beispiele aus Lehrbüchern
   - Fokus auf schwierige Bereiche
@@ -145,28 +145,26 @@ Siehe [DOCKER.md](DOCKER.md) für Details.
 
 ## Technologie
 
-- **Vite 7.1.12** - Schneller Build-Tool
+- **Vite 7.1.12** - Build-Tool
 - **TypeScript** - Type Safety
-- **Vanilla JavaScript** - Keine Frameworks, pure Performance
-- **CSS3** - Moderne Styling mit Gradients, Animationen und 3D-Effekte
+- **Vanilla JavaScript** - Keine Frameworks
+- **CSS3** - Styling mit Gradients, Animationen, 3D-Effekte
 
 ## Hintergrund: Handelskalkulation
 
 ### Vorwärtskalkulation
 
-Startet mit dem **Einkaufspreis** (LEP) und berechnet den **Verkaufspreis**.  
+Startet mit **Einkaufspreis** (LEP), berechnet **Verkaufspreis**.  
 **Frage**: "Was muss ich verlangen, um Kosten und Gewinn zu decken?"
 
 ### Rückwärtskalkulation
 
-Startet mit dem **Verkaufspreis** (LVP/BVP2) und berechnet den maximalen **Einkaufspreis**.  
+Startet mit **Verkaufspreis** (LVP/BVP2), berechnet maximalen **Einkaufspreis**.  
 **Frage**: "Was darf das Produkt maximal kosten bei gegebenem Verkaufspreis?"
 
 ### Differenzkalkulation
 
 Vergleich zwischen Einkaufs- und Verkaufspreis zur Gewinnermittlung.
-
-Alle drei Kalkulationsarten werden in diesem Trainer geübt!
 
 ## Zukünftige Erweiterungen
 
