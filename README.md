@@ -9,11 +9,15 @@ Interaktiver Trainer für deutsche Handelskalkulation (Vor- und Rückwärtskalku
   - Tabelle anordnen + Rechenzeichen wählen
   - Nur Rechenzeichen wählen
   - Vollständig (in Entwicklung)
+- **🎓 Prüfungsmodus**: Textaufgabe mit 5-8 Werten, unsortierte Tabelle, vollständige Eigenbearbeitung
 - **Drag & Drop**: Zeilen in richtige Reihenfolge bringen
 - **Pfeil-Buttons**: Alternative - Zeilen mit Pfeilen verschieben
 - **Rechenzeichen-Buttons**: +, −, = per Klick
 - **Preis-Berechnung**: Ein Preis vorgegeben, andere berechnen
 - **Formel-Eingabe**: Berechnungsformel (z.B. `450×20÷100`)
+  - **Automatische Preis-Berechnung**: Formel-Eingabe füllt Preis-Feld automatisch
+- **Zeile-für-Zeile Prüfung**: Während Bearbeitung prüfbar (Blur-Event)
+- **Fehlerkorrektur**: Nach Prüfung Fehler sehen und korrigieren
 - **Validierung**:
   - Positions-Check (falsche Zeilen rot)
   - Rechenzeichen-Check (grün/rot)
@@ -60,16 +64,23 @@ Wähle aus vier Optionen:
 - **LEP** (Vorwärtskalkulation vom Einkauf)
 - **LVP** (Rückwärtskalkulation vom Verkauf)
 - **BVP2** (Rückwärtskalkulation vom Endpreis)
-- **Benutzerdefiniert**: 
+- **Benutzerdefiniert**:
   - Beliebiger Wert in Euro
   - Startposition wählbar (z.B. BP, SKP)
   - Für spezielle Übungsszenarien
 
 ### 2. Übungsoptionen
 
-- **"Tabelle bereits angeordnet"**: 
+- **"Tabelle bereits angeordnet"**:
   - Aktiviert: Rechenzeichen und Berechnungen üben
   - Deaktiviert: Drag & Drop-Übung inklusive
+
+- **🎓 "Prüfungsmodus"**:
+  - Aktiviert: Textaufgabe mit 5-8 Parametern
+  - Unsortierte Tabelle
+  - Nur ein logischer Startwert (= Position)
+  - Vollständige Eigenbearbeitung erforderlich
+  - Lexikon deaktiviert
 
 ### 3. Aufgabe bearbeiten
 
@@ -78,9 +89,13 @@ Wähle aus vier Optionen:
 3. **Preise berechnen**: Berechnete Preise eintragen (ein Preis vorgegeben)
 4. **Formeln eingeben**: Berechnungsschritte dokumentieren
    - Beispiel: `450×20÷100` oder `450*20/100`
+   - **Formel füllt Preis-Feld automatisch**
    - **Ergebnis** wird geprüft, nicht Schreibweise
    - × oder *, ÷ oder / verwendbar
    - Komma oder Punkt für Dezimalzahlen
+5. **Zeile-für-Zeile prüfen**: Felder verlassen (Blur) prüft automatisch
+   - Grün = Richtig, Rot = Falsch
+   - Korrektur jederzeit möglich
 
 ### 4. Lösung prüfen
 
@@ -89,6 +104,7 @@ Wähle aus vier Optionen:
 - Grün = Richtig
 - Rot = Falsch
 - Falsch angeordnete Zeilen: roter Hintergrund
+- **Nach Prüfung**: Fehler sehen und korrigieren
 
 ### 5. Lexikon nutzen
 
@@ -105,10 +121,13 @@ Wähle aus vier Optionen:
 - **Bezugskosten (BK)**: Position ohne Prozentsatz (Festbetrag)
 - **Zwischensummen (=)**: LEP, ZEP, BEK, BP, SKP, BVP, ZVP, LVP, BVP2
 - **Toleranz**: Preise ±0,01€ genau
-- **Formeln**: 
+- **Formeln**:
   - Ergebnis muss stimmen, nicht Schreibweise
   - `500*0.2` = `500×20÷100` = `500×0,2` (korrekt bei Ergebnis = 100)
+  - Formel-Eingabe füllt Preis automatisch
+- **Zeilen-Prüfung**: Während Eingabe prüfbar (beim Feld-Verlassen)
 - **Lexikon**: Bei Unsicherheiten öffnen für Erklärungen und Beispiele
+- **Prüfungsmodus**: Realistische Textaufgaben mit Alltagsszen arien
 - **Benutzerdefinierter Start**: Für:
   - Gezielte Übung einzelner Kalkulationsabschnitte
   - Nachrechnen realer Beispiele aus Lehrbüchern
