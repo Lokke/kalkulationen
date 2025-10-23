@@ -116,6 +116,8 @@ Klicke auf **"Lexikon"** für:
 
 ## Installation & Start
 
+### Lokale Entwicklung
+
 ```bash
 # Dependencies installieren
 npm install
@@ -126,6 +128,20 @@ npm run dev
 # Build für Produktion
 npm run build
 ```
+
+### Docker
+
+```bash
+# Image bauen
+docker build -t kalkulationen:latest .
+
+# Container starten
+docker run -d -p 6333:6333 --name kalkulationen kalkulationen:latest
+
+# App öffnen: http://localhost:6333
+```
+
+Siehe [DOCKER.md](DOCKER.md) für Details.
 
 ## Technologie
 
