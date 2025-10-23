@@ -230,8 +230,14 @@ td {
   width: 140px;
 }
 
+.formel-container {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
 .formel-input {
-  width: 100%;
+  flex: 1;
   padding: 0.3rem 0.5rem;
   border: 2px solid #e0e0e0;
   border-radius: 4px;
@@ -253,6 +259,32 @@ td {
 .formel-input.incorrect {
   border-color: #f44336;
   background-color: #ffebee;
+}
+
+.hilfe-btn {
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+  border: 2px solid #ffc107;
+  background: linear-gradient(to bottom, #fff9e6, #ffecb3);
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.hilfe-btn:hover {
+  background: linear-gradient(to bottom, #ffecb3, #ffe082);
+  transform: scale(1.1);
+  box-shadow: 0 2px 8px rgba(255, 193, 7, 0.4);
+}
+
+.hilfe-btn:active {
+  transform: scale(0.95);
 }
 
 .formel-display {

@@ -16,6 +16,7 @@ Interaktiver Trainer für deutsche Handelskalkulation (Vor- und Rückwärtskalku
 - **Preis-Berechnung**: Ein Preis vorgegeben, andere berechnen
 - **Formel-Eingabe**: Berechnungsformel (z.B. `450×20÷100`)
   - **Automatische Preis-Berechnung**: Formel-Eingabe füllt Preis-Feld automatisch
+  - **💡 Formel-Hilfe**: Button zeigt korrekte Beispiel-Formel und kann übernommen werden
 - **Zeile-für-Zeile Prüfung**: Während Bearbeitung prüfbar (Blur-Event)
 - **Fehlerkorrektur**: Nach Prüfung Fehler sehen und korrigieren
 - **Validierung**:
@@ -90,6 +91,7 @@ Wähle aus vier Optionen:
 4. **Formeln eingeben**: Berechnungsschritte dokumentieren
    - Beispiel: `450×20÷100` oder `450*20/100`
    - **Formel füllt Preis-Feld automatisch**
+   - **💡 Hilfe-Button**: Zeigt korrekte Formel mit Erklärung
    - **Ergebnis** wird geprüft, nicht Schreibweise
    - × oder *, ÷ oder / verwendbar
    - Komma oder Punkt für Dezimalzahlen
@@ -125,6 +127,7 @@ Wähle aus vier Optionen:
   - Ergebnis muss stimmen, nicht Schreibweise
   - `500*0.2` = `500×20÷100` = `500×0,2` (korrekt bei Ergebnis = 100)
   - Formel-Eingabe füllt Preis automatisch
+  - 💡 Hilfe-Button zeigt korrekte Formel
 - **Zeilen-Prüfung**: Während Eingabe prüfbar (beim Feld-Verlassen)
 - **Lexikon**: Bei Unsicherheiten öffnen für Erklärungen und Beispiele
 - **Prüfungsmodus**: Realistische Textaufgaben mit Alltagsszen arien

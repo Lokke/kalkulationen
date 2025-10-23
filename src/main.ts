@@ -655,14 +655,19 @@ class KalkulationsTrainer {
       if (zeile.isFixed || zeile.prozent === null) {
         formelHtml = '<span class="formel-display">-</span>';
       } else {
-        formelHtml = `<input 
-          type="text" 
-          class="formel-input" 
-          id="formel-${index}"
-          value="${zeile.userFormel}" 
-          placeholder="z.B. 450×20÷100"
-          data-index="${index}"
-        />`;
+        formelHtml = `
+          <div class="formel-container">
+            <input 
+              type="text" 
+              class="formel-input" 
+              id="formel-${index}"
+              value="${zeile.userFormel}" 
+              placeholder="z.B. 450×20÷100"
+              data-index="${index}"
+            />
+            <button class="hilfe-btn" data-index="${index}" title="Formel-Hilfe">💡</button>
+          </div>
+        `;
       }
       
       return `
@@ -694,6 +699,7 @@ class KalkulationsTrainer {
     this.setupOperationButtons();
     this.setupPreisInputs();
     this.setupFormelInputs();
+    this.setupHilfeButtons();
   }
 
   private renderOperationSelector(zeile: KalkulationsZeile, index: number): string {
@@ -790,6 +796,57 @@ class KalkulationsTrainer {
         }
       });
     });
+  }
+
+  private setupHilfeButtons() {
+    document.querySelectorAll('.hilfe-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const button = e.target as HTMLButtonElement;
+        const index = parseInt(button.getAttribute('data-index') || '0');
+        this.zeigeFormelHilfe(index);
+      });
+    });
+  }
+
+  private zeigeFormelHilfe(index: number) {
+    const zeile = this.daten[index];
+    const korrekt = this.korrekteDaten.find(k => k.id === zeile.id);
+    
+    if (!korrekt || !korrekt.formel) {
+      alert('Keine Hilfe verfügbar für diese Zeile.');
+      return;
+    }
+
+    // Zeige korrekte Formel im Alert
+    const formelBeispiel = korrekt.formel;
+    const ergebnis = korrekt.preis?.toFixed(2) || '0.00';
+    
+    const hilfeText = `💡 Formel-Hilfe für ${zeile.abkuerzung} (${zeile.name}):\n\n` +
+                     `Beispiel-Formel:\n${formelBeispiel}\n\n` +
+                     `Ergebnis: ${ergebnis} €\n\n` +
+                     `Hinweis: Du kannst auch andere Schreibweisen verwenden:\n` +
+                     `• × oder *\n` +
+                     `• ÷ oder /\n` +
+                     `• Komma oder Punkt für Dezimalzahlen`;
+    
+    if (confirm(hilfeText + '\n\nMöchtest du diese Formel übernehmen?')) {
+      // Formel übernehmen
+      zeile.userFormel = formelBeispiel;
+      const formelInput = document.getElementById(`formel-${index}`) as HTMLInputElement;
+      if (formelInput) {
+        formelInput.value = formelBeispiel;
+      }
+      
+      // Preis automatisch berechnen
+      const ergebnisNum = this.evaluateFormel(formelBeispiel, 0);
+      if (ergebnisNum !== null) {
+        zeile.userPreis = ergebnisNum.toFixed(2);
+        const preisInput = document.getElementById(`preis-${index}`) as HTMLInputElement;
+        if (preisInput) {
+          preisInput.value = ergebnisNum.toFixed(2);
+        }
+      }
+    }
   }
 
   private setupDragAndDrop() {
