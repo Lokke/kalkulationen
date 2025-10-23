@@ -4,7 +4,7 @@ import { kalkulationsSchemaTemplate } from './types';
 import { kalkulationsLexikon, allgemeineInfos } from './lexikon';
 import { generiereTextaufgabe } from './textaufgaben';
 
-type UebungsModus = 'anordnung' | 'operation' | 'vollstaendig';
+type UebungsModus = 'anordnung' | 'operation' | 'vollstaendig' | 'builder';
 
 class KalkulationsTrainer {
   private daten: KalkulationsZeile[] = [];
@@ -20,6 +20,7 @@ class KalkulationsTrainer {
   private aktuelleTextaufgabe: TextAufgabe | null = null;
   private geloest: boolean = false; // Track ob bereits geprüft wurde
   private zeilenValidierung: Map<number, boolean> = new Map(); // Zeilen-Validierung speichern
+  private anzahlVorgegebeneWerte: number = 3; // Für Builder-Modus
   
   constructor() {
     this.render();
@@ -242,6 +243,13 @@ class KalkulationsTrainer {
 
     modusSelect?.addEventListener('change', (e) => {
       this.modus = (e.target as HTMLSelectElement).value as UebungsModus;
+      
+      // Builder-Controls anzeigen/verstecken
+      const builderControls = document.getElementById('builderControls');
+      if (builderControls) {
+        builderControls.style.display = this.modus === 'builder' ? 'block' : 'none';
+      }
+      
       this.neueAufgabe();
     });
 
@@ -307,6 +315,34 @@ class KalkulationsTrainer {
     closeLexikon?.addEventListener('click', () => {
       this.toggleLexikon();
     });
+    
+    // Builder-Modus Event Listeners
+    const anzahlWerteSlider = document.getElementById('anzahlWerte') as HTMLInputElement;
+    anzahlWerteSlider?.addEventListener('input', (e) => {
+      const value = parseInt((e.target as HTMLInputElement).value);
+      this.anzahlVorgegebeneWerte = value;
+      const label = document.getElementById('anzahlWerteLabel');
+      if (label) label.textContent = value.toString();
+      
+      if (this.modus === 'builder') {
+        this.generiereBuilderWerte();
+      }
+    });
+    
+    const tabelleLeeren = document.getElementById('tabelleLeeren') as HTMLButtonElement;
+    tabelleLeeren?.addEventListener('click', () => {
+      this.daten = [];
+      this.renderTabelle();
+    });
+    
+    // Zeilen-Buttons
+    document.querySelectorAll('.zeile-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const button = e.target as HTMLButtonElement;
+        const index = parseInt(button.getAttribute('data-index') || '0');
+        this.fuegeZeileHinzu(index);
+      });
+    });
   }
 
   private neueAufgabe() {
@@ -341,6 +377,10 @@ class KalkulationsTrainer {
           zeile.userFormel = '';
         }
       });
+    } else if (this.modus === 'builder') {
+      // Builder-Modus: Leere Tabelle
+      this.daten = [];
+      this.generiereBuilderWerte();
     } else {
       this.daten = [...this.korrekteDaten];
       this.daten.forEach(zeile => {
@@ -352,6 +392,78 @@ class KalkulationsTrainer {
       });
     }
 
+    this.renderTabelle();
+  }
+
+  private generiereBuilderWerte() {
+    // Generiere Zufallswerte für vorgegebene Anzahl
+    // Diese werden als korrekte Lösung verwendet
+    this.korrekteDaten = this.generateRandomData();
+    
+    // Bestimme welche Zeilen Werte bekommen (zufällig ausgewählt)
+    const alleZeilen = [...this.korrekteDaten];
+    const mitWert: number[] = [];
+    
+    // Startwert ist immer dabei
+    const startwertIndex = alleZeilen.findIndex(z => z.isFixed);
+    if (startwertIndex >= 0) {
+      mitWert.push(startwertIndex);
+    }
+    
+    // Restliche Werte zufällig verteilen
+    while (mitWert.length < this.anzahlVorgegebeneWerte) {
+      const randomIndex = Math.floor(Math.random() * alleZeilen.length);
+      if (!mitWert.includes(randomIndex) && !alleZeilen[randomIndex].isFixed) {
+        mitWert.push(randomIndex);
+      }
+    }
+    
+    // Setze Werte
+    this.daten.forEach((zeile, index) => {
+      if (mitWert.includes(index)) {
+        const korrekt = this.korrekteDaten.find(k => k.id === zeile.id);
+        if (korrekt && korrekt.preis !== null) {
+          zeile.userPreis = korrekt.preis.toFixed(2);
+        }
+      }
+    });
+    
+    this.renderTabelle();
+  }
+
+  private fuegeZeileHinzu(schemaIndex: number) {
+    const schema = kalkulationsSchemaTemplate[schemaIndex];
+    
+    // Prüfe ob Zeile bereits existiert
+    if (this.daten.some(z => z.id === schemaIndex)) {
+      alert(`${schema.abkuerzung} ist bereits in der Tabelle!`);
+      return;
+    }
+    
+    const zeile: KalkulationsZeile = {
+      id: schemaIndex,
+      operation: schema.operation,
+      abkuerzung: schema.abkuerzung,
+      name: schema.name,
+      prozent: null,
+      preis: null,
+      userPreis: '',
+      userFormel: '',
+      formel: '',
+      isFixed: false,
+      originalOrder: schemaIndex
+    };
+    
+    // Prozent setzen falls vorhanden
+    if (schema.prozentRange) {
+      if (schema.isSkonto) {
+        zeile.prozent = Math.floor(Math.random() * 4) + 1;
+      } else {
+        zeile.prozent = Math.floor(Math.random() * (schema.prozentRange[1] - schema.prozentRange[0]) + schema.prozentRange[0]);
+      }
+    }
+    
+    this.daten.push(zeile);
     this.renderTabelle();
   }
 
@@ -569,6 +681,7 @@ class KalkulationsTrainer {
           <select id="modus">
             <option value="anordnung">Tabelle anordnen + Zeichen</option>
             <option value="operation">Nur Rechenzeichen</option>
+            <option value="builder">🔧 Tabelle selbst bauen</option>
             <option value="vollstaendig">Vollständig (später)</option>
           </select>
           
@@ -602,6 +715,27 @@ class KalkulationsTrainer {
           <button id="neueAufgabe">Neue Aufgabe</button>
           <button id="pruefe">Lösung prüfen</button>
           <button id="lexikonBtn" class="lexikon-btn">📚 Lexikon</button>
+        </div>
+        
+        <!-- Builder-Modus Controls -->
+        <div id="builderControls" style="display: none;">
+          <div class="control-row">
+            <label for="anzahlWerte">Vorgegebene Werte: <span id="anzahlWerteLabel">3</span></label>
+            <input type="range" id="anzahlWerte" min="1" max="10" value="3" style="width: 200px;" />
+            
+            <button id="tabelleLeeren" class="secondary-btn">🗑️ Tabelle leeren</button>
+          </div>
+          
+          <div class="zeilen-builder">
+            <strong>Zeile hinzufügen:</strong>
+            <div class="zeilen-buttons">
+              ${kalkulationsSchemaTemplate.map((s, i) => `
+                <button class="zeile-btn" data-index="${i}" title="${s.name}">
+                  ${s.abkuerzung}
+                </button>
+              `).join('')}
+            </div>
+          </div>
         </div>
       </div>
 
@@ -657,10 +791,9 @@ class KalkulationsTrainer {
       }
       
       let formelHtml = '';
-      // Zeige Formel-Eingabe für alle Operationen außer "=" und feste Werte
-      // Nutze das Schema (originalOrder) um die korrekte Operation zu ermitteln
-      const schema = kalkulationsSchemaTemplate[zeile.originalOrder];
-      const zeigeFormel = !zeile.isFixed && (schema.operation === '+' || schema.operation === '-');
+      // Zeige Formel-Eingabe für alle Zeilen außer feste Werte und der ersten Zeile (LEP)
+      const istErsteZeile = zeile.originalOrder === 0; // LEP ist immer Index 0
+      const zeigeFormel = !zeile.isFixed && !istErsteZeile;
       
       if (!zeigeFormel) {
         formelHtml = '<span class="formel-display">-</span>';
