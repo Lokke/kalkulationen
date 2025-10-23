@@ -5,47 +5,76 @@ import { kalkulationsSchemaTemplate } from './types';
 export function generiereTextaufgabe(typ: 'vorwaerts' | 'rueckwaerts'): TextAufgabe {
   const szenarien = [
     {
-      // Sportgerätegroßhandel
       kontext: 'Sportgerätegroßhandel',
       produkt: 'Surfbrett',
       artikel: 'das Surfbrett',
-      preisRange: [1500, 3000],
+      preisRangeLEP: [180, 350],
+      preisRangeLVP: [420, 680],
+      preisRangeBVP2: [500, 810],
     },
     {
       kontext: 'Funkwecker-Großhandel',
       produkt: 'Funkwecker',
       artikel: 'den Wecker',
-      preisRange: [15, 35],
+      preisRangeLEP: [12, 25],
+      preisRangeLVP: [28, 48],
+      preisRangeBVP2: [33, 57],
     },
     {
       kontext: 'Möbelgroßhandel',
       produkt: 'Relaxliegen-Sortiment',
       artikel: 'das Sortiment',
-      preisRange: [8000, 15000],
+      preisRangeLEP: [3500, 6000],
+      preisRangeLVP: [7800, 12500],
+      preisRangeBVP2: [9300, 14900],
     },
     {
       kontext: 'Baumarkt',
-      produkt: 'Holzoberfläche',
-      artikel: 'die Holzoberfläche',
-      preisRange: [200, 400],
+      produkt: 'Holzbearbeitungsmaschine',
+      artikel: 'die Holzbearbeitungsmaschine',
+      preisRangeLEP: [1200, 2200],
+      preisRangeLVP: [2400, 4200],
+      preisRangeBVP2: [2860, 5000],
     },
     {
       kontext: 'Sportgeschäft',
       produkt: 'Paar Sneakers',
       artikel: 'ein Paar Sneakers',
-      preisRange: [100, 200],
+      preisRangeLEP: [45, 85],
+      preisRangeLVP: [95, 165],
+      preisRangeBVP2: [113, 196],
     },
     {
       kontext: 'Elektronikgroßhandel',
       produkt: 'Tablet',
       artikel: 'das Tablet',
-      preisRange: [250, 600],
+      preisRangeLEP: [150, 320],
+      preisRangeLVP: [320, 610],
+      preisRangeBVP2: [380, 726],
     },
     {
       kontext: 'Textilgroßhandel',
-      produkt: 'Winterjacke',
-      artikel: 'die Winterjacke',
-      preisRange: [60, 150],
+      produkt: 'Winterjacken-Kollektion',
+      artikel: 'die Winterjacken-Kollektion',
+      preisRangeLEP: [2800, 4500],
+      preisRangeLVP: [5900, 9200],
+      preisRangeBVP2: [7020, 10948],
+    },
+    {
+      kontext: 'Getränkegroßhandel',
+      produkt: 'Kiste Mineralwasser',
+      artikel: 'eine Kiste Mineralwasser',
+      preisRangeLEP: [4.50, 7.20],
+      preisRangeLVP: [9.80, 14.50],
+      preisRangeBVP2: [11.66, 17.26],
+    },
+    {
+      kontext: 'Bürobedarfshandel',
+      produkt: 'Bürostuhl-Set',
+      artikel: 'das Bürostuhl-Set',
+      preisRangeLEP: [890, 1450],
+      preisRangeLVP: [1850, 2980],
+      preisRangeBVP2: [2202, 3546],
     },
   ];
 
@@ -62,20 +91,21 @@ export function generiereTextaufgabe(typ: 'vorwaerts' | 'rueckwaerts'): TextAufg
   if (typ === 'vorwaerts') {
     // Vorwärtskalkulation: Start bei LEP
     startPosition = 0; // LEP
-    startwert = Math.round((szenario.preisRange[0] + Math.random() * (szenario.preisRange[1] - szenario.preisRange[0])) * 100) / 100;
+    startwert = Math.round((szenario.preisRangeLEP[0] + Math.random() * (szenario.preisRangeLEP[1] - szenario.preisRangeLEP[0])) * 100) / 100;
     
-    text = `Unser ${szenario.kontext} hat erfahren, dass die Konkurrenz ein bestimmtes ${szenario.produkt} zum Nettoverkaufspreis von ${startwert.toFixed(2)} € anbietet. Um keine Kunden zu verlieren, möchten wir ${szenario.artikel} ebenfalls zu diesem Verkaufspreis anpassen. Wir möchten jedoch unsere kalkulierte Gewinnspanne sowie die restlichen Kalkulationssätze beibehalten. Zu welchem Einkaufspreis können wir ${szenario.artikel} maximal einkaufen, wenn folgende Größen gelten:\n\n`;
+    text = `Ein ${szenario.kontext} kann ${szenario.artikel} zu einem Listeneinkaufspreis von ${startwert.toFixed(2)} € einkaufen. Berechnen Sie den Bruttoverkaufspreis, wenn folgende Kalkulationssätze gelten:\n\n`;
     
   } else {
     // Rückwärtskalkulation: Start bei LVP oder BVP2
     const startTyp = Math.random() > 0.5 ? 'LVP' : 'BVP2';
     startPosition = kalkulationsSchemaTemplate.findIndex(s => s.abkuerzung === startTyp);
-    startwert = Math.round((szenario.preisRange[0] + Math.random() * (szenario.preisRange[1] - szenario.preisRange[0])) * 100) / 100;
     
     if (startTyp === 'BVP2') {
-      text = `Ein ${szenario.kontext} möchte ${szenario.artikel} für ${startwert.toFixed(2)} € brutto verkaufen. Wir gewähren unseren Kunden einen Rabatt und einen Skonto. Wir kalkulieren mit einem Gewinn und einem Handlungskostensatz. Der Lieferant berechnet uns keine Bezugskosten. Der Lieferer gewährt uns einen Skonto und einen Rabatt. Welchen Einkaufspreis darf ${szenario.artikel} höchstens kosten, wenn folgende Kalkulationssätze gelten:\n\n`;
+      startwert = Math.round((szenario.preisRangeBVP2[0] + Math.random() * (szenario.preisRangeBVP2[1] - szenario.preisRangeBVP2[0])) * 100) / 100;
+      text = `Ein ${szenario.kontext} möchte ${szenario.artikel} für ${startwert.toFixed(2)} € brutto verkaufen. Berechnen Sie den maximal zulässigen Listeneinkaufspreis, wenn folgende Kalkulationssätze gelten:\n\n`;
     } else {
-      text = `Ein ${szenario.kontext} hat einen vom Hersteller empfohlenen Richtpreis von ${startwert.toFixed(2)} € (netto) erhalten. Wir möchten ${szenario.artikel} zu diesem Verkaufspreis anbieten. Welchen Einkaufspreis darf der Händler höchstens kalkulieren, wenn folgende Kalkulationssätze gelten:\n\n`;
+      startwert = Math.round((szenario.preisRangeLVP[0] + Math.random() * (szenario.preisRangeLVP[1] - szenario.preisRangeLVP[0])) * 100) / 100;
+      text = `Ein ${szenario.kontext} hat ${szenario.artikel} zu einem Listenverkaufspreis von ${startwert.toFixed(2)} € (netto) kalkuliert. Berechnen Sie den maximal zulässigen Listeneinkaufspreis, wenn folgende Kalkulationssätze gelten:\n\n`;
     }
   }
 
