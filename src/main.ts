@@ -658,7 +658,9 @@ class KalkulationsTrainer {
       
       let formelHtml = '';
       // Zeige Formel-Eingabe für alle Operationen außer "=" und feste Werte
-      const zeigeFormel = !zeile.isFixed && (zeile.operation === '+' || zeile.operation === '-');
+      // Nutze das Schema (originalOrder) um die korrekte Operation zu ermitteln
+      const schema = kalkulationsSchemaTemplate[zeile.originalOrder];
+      const zeigeFormel = !zeile.isFixed && (schema.operation === '+' || schema.operation === '-');
       
       if (!zeigeFormel) {
         formelHtml = '<span class="formel-display">-</span>';
