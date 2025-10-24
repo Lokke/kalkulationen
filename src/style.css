@@ -30,12 +30,38 @@ body {
   margin: 0 auto;
 }
 
-h1 {
-  text-align: center;
-  color: #fff;
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 1rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+h1 {
+  color: #fff;
   font-size: 1.8rem;
   text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+  margin: 0;
+}
+
+.lern-link {
+  display: inline-block;
+  color: #fff;
+  text-decoration: none;
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(to bottom, #10b981, #059669);
+  border-radius: 8px;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+  transition: all 0.2s ease;
+}
+
+.lern-link:hover {
+  background: linear-gradient(to bottom, #059669, #047857);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
 }
 
 .controls {
@@ -721,4 +747,207 @@ tbody tr:hover .drag-indicator {
   .lexikon-panel {
     width: 100%;
   }
+}
+
+/* Lernmodus Styles */
+.back-link {
+  display: inline-block;
+  color: #fff;
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  transition: background 0.2s ease;
+  margin-bottom: 1rem;
+}
+
+.back-link:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.lern-controls {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+}
+
+.lern-controls label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #333;
+}
+
+.lern-controls select {
+  padding: 0.5rem;
+  border: 2px solid #667eea;
+  border-radius: 6px;
+  font-size: 0.95rem;
+}
+
+.lern-anleitung {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+}
+
+.lern-anleitung p {
+  color: #333;
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+.lern-aufgabe {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+}
+
+.lern-aufgabe h3 {
+  color: #333;
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+}
+
+.begriffe-liste {
+  margin-bottom: 2rem;
+}
+
+.abk-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.abk-chip {
+  background: linear-gradient(to bottom, #667eea, #5a6cd6);
+  color: white;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  box-shadow: 0 2px 6px rgba(102, 126, 234, 0.3);
+  transition: all 0.2s ease;
+  min-width: 150px;
+}
+
+.abk-chip.zugeordnet {
+  opacity: 0.4;
+}
+
+.abk-chip strong {
+  font-size: 1.1rem;
+  display: block;
+}
+
+.abk-chip span {
+  font-size: 0.85rem;
+  opacity: 0.9;
+}
+
+.zuordnung-liste {
+  margin-top: 1rem;
+}
+
+.zuordnung-zeile {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.position-nummer {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #667eea;
+  min-width: 30px;
+}
+
+.zuordnung-select {
+  flex: 1;
+  padding: 0.75rem;
+  border: 2px solid #667eea;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  background: white;
+  color: #333;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+
+.zuordnung-select option {
+  color: #333;
+  background: white;
+}
+
+.zuordnung-select:focus {
+  outline: none;
+  border-color: #5a6cd6;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+}
+
+.lern-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.btn-primary,
+.btn-secondary {
+  padding: 0.75rem 2rem;
+  border: 2px solid;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-primary {
+  background: linear-gradient(to bottom, #10b981, #059669);
+  border-color: #10b981;
+  color: white;
+  box-shadow: 0 2px 6px rgba(16, 185, 129, 0.3);
+}
+
+.btn-primary:hover {
+  background: linear-gradient(to bottom, #059669, #047857);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+}
+
+.btn-secondary {
+  background: linear-gradient(to bottom, #f59e0b, #d97706);
+  border-color: #f59e0b;
+  color: white;
+  box-shadow: 0 2px 6px rgba(245, 158, 11, 0.3);
+}
+
+.btn-secondary:hover {
+  background: linear-gradient(to bottom, #d97706, #b45309);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+}
+
+.feedback.success {
+  background: #d1fae5;
+  border-color: #10b981;
+  color: #065f46;
+}
+
+.feedback.error {
+  background: #fee2e2;
+  border-color: #ef4444;
+  color: #991b1b;
 }

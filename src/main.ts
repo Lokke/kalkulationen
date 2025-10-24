@@ -681,7 +681,10 @@ class KalkulationsTrainer {
     const app = document.getElementById('app')!;
     
     app.innerHTML = `
-      <h1>📊 Kalkulationstrainer</h1>
+      <div class="header">
+        <h1>📊 Kalkulationstrainer</h1>
+        <a href="/lernmodus.html" class="lern-link">🎓 Lernmodus - Reihenfolge üben</a>
+      </div>
       
       <div class="controls">
         <div class="control-row">
